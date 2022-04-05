@@ -190,14 +190,25 @@ int main (int argc, char *argv[]) {
     // arguments checking
 
     // create socket and check for errors
-    
-    // set socket data    
+    sd = socket(AF_INET, SOCK_STREAM, 0);
 
+	if (sd < 0) {
+	       printf("Fail on socket's creation\n");
+	       exit(1);
+	}
+    // set socket data    
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = inet_addr(argv[1]);
+	addr.sin_port = htons(atoi(argv[2]));
     // connect and check for errors
+	if(connect(sd,(struct sockaddr *)&addr, sizeof(addr)) < 0){
+		printf("Fail on socket's connection\n");
+		exit(1);
+	}
 
     // if receive hello proceed with authenticate and operate if not warning
 
     // close socket
-
+	close(sd);
     return 0;
 }

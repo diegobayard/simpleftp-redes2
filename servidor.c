@@ -192,16 +192,34 @@ int main (int argc, char *argv[]) {
     // arguments checking
 
     // reserve sockets and variables space
+    int msd, ssd;
+    struct sockaddr_in maddr, saddr;
+    socklen_t saddr_len = sizeof(saddr);
 
     // create server socket and check errors
+    msd= socket(AF_INET, SOCK_STREAM, 0);
+    if(msd<0){
+	warn("Fail on msd");
+    }
     
     // bind master socket and check errors
+    maddr.sin_family = AF_INET;
+    maddr.sin_addr.s_addr = INADDR_ANY; //INTERNET NUMBER
+    maddr.sin_port = htons(atoi(argv[1]));
 
+    if(bind(msd, (struct sockaddr *) &maddr, sizeof(maddr))<0){
+	errx(1,"Fail on bind");
+    }	
     // make it listen
+	listen(msd, 5);
 
     // main loop
     while (true) {
         // accept connectiones sequentially and check errors
+		if((ssd = accept(msd,(struct sockaddr *) &saddr, &saddr_len))<0){
+			errx(1, "Fail on accept");
+		}
+
 
         // send hello
 
